@@ -1,0 +1,38 @@
+{
+  "itemGroup.drivebywire" : "Drive By Wire",
+  
+  "block.drivebywire.backup_block" : "Blok Kopii Zapasowej",
+  "block.drivebywire.controller_hub" : "Centrala Kontrolera Połączeniowego",
+  "block.drivebywire.tweaked_controller_hub" : "Centrala Ulepszonego Kontrolera", 
+  
+  "item.drivebywire.wire" : "Kabel",
+  "item.drivebywire.wire_cutter" : "Obcęgi do Kabli",
+  
+  "item.drivebywire.wire_cutter.tooltip.summary" : "Złe połączenie? Za dużo przewodów? Poprostu je przetnij!",
+  "block.drivebywire.backup_block.tooltip.summary" : "Zapisuje sieć statku po zapisaniu na schemacie, i ładuje ją przy zamianie w statek",
+  "block.drivebywire.controller_hub.tooltip.summary" : "Przipisz twój kontroller do tego bloku, i kontroluj tą sieć z dalekiego zasięgu!",
+  "block.drivebywire.tweaked_controller_hub.tooltip.summary" : "Przipisz twój kontroller do tego bloku, i kontroluj tą sieć z dalekiego zasięgu!",
+  
+  "drivebywire.ponder.wires.header" : "Sieci srzewodowe 101",
+  "drivebywire.ponder.wires.text_1" : "Uwaga: Sieci przewodowe działają tylko na zmontowanych statkach z VS2",
+  "drivebywire.ponder.wires.text_2" : "Połącz źródło redstone do bloku,",
+  "drivebywire.ponder.wires.text_3" : "To siła redstone będzie prezsyłana przez kabel",
+  "drivebywire.ponder.wires.text_4" : "Połącz blok do bloku,",
+  "drivebywire.ponder.wires.text_5" : "To sąsiednia siła redstone będzie prezsyłana przez kabel",
+
+  "drivebywire.ponder.lectern.header" : "Specjalne sołączenia 101",
+  "drivebywire.ponder.lectern.text_1" : "Połączenia z kontrolera na pulpicie mają specjalną funkcje,",
+  "drivebywire.ponder.lectern.text_2" : "Mają wiele kanałów do transmisji, które odpowiadają przyciskom kontrolera.",
+  "drivebywire.ponder.lectern.text_3" : "Wybierz kanał, który chcesz, używając kółka myszy przy trzymaniu kabli",
+
+  "drivebywire.ponder.save.header" : "Zapisiwanie sieci 101",
+  "drivebywire.ponder.save.text_1" : "Co gdybyś chciał zapisać swoją sieć do schematu, a potem ją wczytać?",
+  "drivebywire.ponder.save.text_2" : "Postaw Blok Kopii Zapasowej na statku przed zapisaniem na schemacie,",
+  "drivebywire.ponder.save.text_3" : "I wszystkie połączenia zostaną przywrócone gdy schemat zostanie zamieniony w statek.",
+
+  "drivebywire.ponder.link.header" : "Ponowne łączenie sieci 101",
+  "drivebywire.ponder.link.text_1" : "Co jeśli chciałbyś załadować sieci pomiędzy wieloma statkami ze schematów?",
+  "drivebywire.ponder.link.text_2" : "Wybierz Blok Kopii Zapasowaj z nadrzędnego statku,",
+  "drivebywire.ponder.link.text_3" : "kliknij prawym przyciskiem myszy na Blok Kopii Zapasowej na podrzędnym statku",
+  "drivebywire.ponder.link.text_4" : "Tadaa, wszystkie połączenia automatycznie załadowane!" 
+}
