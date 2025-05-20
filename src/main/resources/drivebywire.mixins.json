@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "MixinServerLevel",
+    "PaletteMixin",
     "compat.MixinLecternControllerBlock",
     "compat.MixinLinkedControllerInputPacket",
     "compat.MixinLinkedControllerStopLecternPacket",
