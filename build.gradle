@@ -230,7 +230,7 @@ dependencies {
     runtimeOnly fg.deobf("maven.modrinth:create-clockwork:Bk2kwZr0")
     
 //    runtimeOnly fg.deobf("maven.modrinth:vmod:mGgUMpre")
-//    runtimeOnly fg.deobf("maven.modrinth:architectury-api:1MKTLiiG")
+    runtimeOnly fg.deobf("maven.modrinth:architectury-api:1MKTLiiG")
 
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
