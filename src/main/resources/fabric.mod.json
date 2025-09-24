@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "id": "drivebywire",
+  "version": "${version}",
+  "name": "Drive-By-Wire Mod",
+  "description": "Cable networks for Valkyrien Skies ships",
+  "authors": [
+    "Endalion"
+  ],
+  "contact": {
+    "homepage": "https://github.com/endalion/drivebywire",
+    "sources": "https://github.com/endalion/drivebywire"
+  },
+  "license": "MIT",
+  "icon": "logo.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      {
+        "adapter": "kotlin",
+        "value": "edn.stratodonut.drivebywire.DriveByWireMod"
+      }
+    ],
+    "client": [
+      {
+        "adapter": "kotlin", 
+        "value": "edn.stratodonut.drivebywire.DriveByWireModClient"
+      }
+    ]
+  },
+  "mixins": [
+    "drivebywire.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "fabric-language-kotlin": "*",
+    "minecraft": "${minecraft_version}",
+    "java": ">=17",
+    "valkyrienskies": ">=2.0.0",
+    "create": ">=0.5.1"
+  },
+  "suggests": {
+    "create_tweaked_controllers": "*"
+  }
+}
