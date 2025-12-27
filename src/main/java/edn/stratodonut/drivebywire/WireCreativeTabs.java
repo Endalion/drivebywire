@@ -1,6 +1,7 @@
 package edn.stratodonut.drivebywire;
 
 import com.tterrag.registrate.util.entry.RegistryEntry;
+import edn.stratodonut.drivebywire.blocks.TFMGEngineControllerHubBlock;
 import edn.stratodonut.drivebywire.blocks.TweakedControllerHubBlock;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -38,6 +39,9 @@ public class WireCreativeTabs {
     public static boolean include(Object thing) {
         if (!ModList.get().isLoaded("create_tweaked_controllers")) {
             if (thing instanceof TweakedControllerHubBlock) return false;
+        }
+        if (!ModList.get().isLoaded("tfmg")) {
+            if (thing instanceof TFMGEngineControllerHubBlock) return false;
         }
         return true;
     }

@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "drivebywire:block/hub" }
+  }
+}
