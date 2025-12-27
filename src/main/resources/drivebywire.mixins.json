@@ -11,7 +11,9 @@
     "compat.tweaked.MixinTweakedController",
     "compat.tweaked.MixinTweakedControllerAxisPacket",
     "compat.tweaked.MixinTweakedControllerButtonPacket",
-    "compat.tweaked.MixinTweakedControllerStopLecternPacket"
+    "compat.tweaked.MixinTweakedControllerStopLecternPacket",
+    "compat.tfmg.MixinTFMGEngineControllerBlock",
+    "compat.tfmg.MixinTFMGEngineControllerBlockEntity"
   ],
   "client": [
     "client.MixinSnqHandler"
