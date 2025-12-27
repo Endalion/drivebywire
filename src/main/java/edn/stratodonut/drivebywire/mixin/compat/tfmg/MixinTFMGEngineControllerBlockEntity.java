@@ -25,6 +25,8 @@ public abstract class MixinTFMGEngineControllerBlockEntity {
         boolean steerLeft  = self.isPressed(2);
         boolean steerRight = self.isPressed(3);
 
+        boolean engineStarted = self.engineStarted;
+
         boolean shiftReverse = self.shift == TransmissionState.REVERSE;
         boolean shiftNeutral = self.shift == TransmissionState.NEUTRAL;
         boolean shift1 = self.shift == TransmissionState.SHIFT_1;
@@ -40,6 +42,8 @@ public abstract class MixinTFMGEngineControllerBlockEntity {
 
         TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.STEER_LEFT, steerLeft);
         TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.STEER_RIGHT, steerRight);
+
+        TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.ENGINE_STARTED, engineStarted);
 
         TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.SHIFT_REVERSE, shiftReverse);
         TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.SHIFT_NEUTRAL, shiftNeutral);

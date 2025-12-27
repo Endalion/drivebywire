@@ -28,6 +28,8 @@ public class TFMGEngineControllerHubBlock extends Block implements MultiChannelW
             TFMGEngineControllerWireServerHandler.STEER_LEFT,
             TFMGEngineControllerWireServerHandler.STEER_RIGHT,
 
+            TFMGEngineControllerWireServerHandler.ENGINE_STARTED,
+
             TFMGEngineControllerWireServerHandler.SHIFT_REVERSE,
             TFMGEngineControllerWireServerHandler.SHIFT_NEUTRAL,
             TFMGEngineControllerWireServerHandler.SHIFT_1,

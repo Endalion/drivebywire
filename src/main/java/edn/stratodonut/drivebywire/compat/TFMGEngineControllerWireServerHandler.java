@@ -37,6 +37,8 @@ public class TFMGEngineControllerWireServerHandler {
         set(level, pos, STEER_LEFT, false);
         set(level, pos, STEER_RIGHT, false);
 
+        set(level, pos, ENGINE_STARTED, false);
+
         set(level, pos, SHIFT_REVERSE, false);
         set(level, pos, SHIFT_NEUTRAL, false);
         set(level, pos, SHIFT_1, false);
