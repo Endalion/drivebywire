@@ -4,6 +4,7 @@
   "block.drivebywire.backup_block" : "Network Backup Block",
   "block.drivebywire.controller_hub" : "Linked Controller Hub",
   "block.drivebywire.tweaked_controller_hub" : "Tweaked Controller Hub",
+  "block.drivebywire.tfmg_engine_controller_hub":  "TFMG Engine Controller Hub",
   
   "item.drivebywire.wire" : "Cable",
   "item.drivebywire.wire_cutter" : "Cable Cutter",
@@ -12,6 +13,7 @@
   "block.drivebywire.backup_block.tooltip.summary" : "Saves the ship network when put in a schematic, and loads when shipified",
   "block.drivebywire.controller_hub.tooltip.summary" : "Bind your controller to this block, and control this network from far away!",
   "block.drivebywire.tweaked_controller_hub.tooltip.summary" : "Bind your controller to this block, and control this network from far away!",
+  "block.drivebywire.tfmg_engine_controller_hub.tooltip.summary" : "Bind your controller to this block, and control this network from far away!",
   
   "drivebywire.ponder.wires.header" : "Cable networks 101",
   "drivebywire.ponder.wires.text_1" : "Disclaimer: Cable networks only work on assembled VS2 ships!",

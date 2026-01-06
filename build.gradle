@@ -227,6 +227,8 @@ dependencies {
 
     implementation fg.deobf("maven.modrinth:create-tweaked-controllers:1.20.1-1.2.5")
 
+    implementation fg.deobf("maven.modrinth:create-tfmg:1.0.2f-forge")
+
     //runtimeOnly fg.deobf("maven.modrinth:eureka:9gbnRz82")
     runtimeOnly fg.deobf("maven.modrinth:vlib:1.20.1-0.1.0+forge")
     runtimeOnly fg.deobf("org.valkyrienskies:clockwork-forge:1.20.1-0.4.0-forge-a764c6701b") {transitive = false }
