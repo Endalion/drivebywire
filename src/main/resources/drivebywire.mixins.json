@@ -5,6 +5,7 @@
   "mixins": [
     "MixinServerLevel",
     "compat.MixinLecternControllerBlock",
+    "compat.MixinLecternControllerBlockEntity",
     "compat.MixinLinkedControllerInputPacket",
     "compat.MixinLinkedControllerStopLecternPacket",
     "compat.tweaked.MixinLecternTweakedBlock",
