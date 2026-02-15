@@ -3,6 +3,8 @@ package edn.stratodonut.drivebywire.mixin.compat.tfmg;
 import com.drmangotea.tfmg.content.engines.engine_controller.EngineControllerBlockEntity;
 import com.drmangotea.tfmg.content.engines.upgrades.TransmissionUpgrade.TransmissionState;
 import edn.stratodonut.drivebywire.compat.TFMGEngineControllerWireServerHandler;
+import edn.stratodonut.drivebywire.compat.TFMGSteeringState;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
@@ -20,50 +22,37 @@ public abstract class MixinTFMGEngineControllerBlockEntity {
         Level level = self.getLevel();
         if (level == null || level.isClientSide) return;
 
-        var pos = self.getBlockPos();
+        BlockPos pos = self.getBlockPos();
 
-        boolean steerLeft  = self.isPressed(2);
-        boolean steerRight = self.isPressed(3);
-
-        boolean engineStarted = self.engineStarted;
-
-        boolean shiftReverse = self.shift == TransmissionState.REVERSE;
-        boolean shiftNeutral = self.shift == TransmissionState.NEUTRAL;
-        boolean shift1 = self.shift == TransmissionState.SHIFT_1;
-        boolean shift2 = self.shift == TransmissionState.SHIFT_2;
-        boolean shift3 = self.shift == TransmissionState.SHIFT_3;
-        boolean shift4 = self.shift == TransmissionState.SHIFT_4;
-        boolean shift5 = self.shift == TransmissionState.SHIFT_5;
-        boolean shift6 = self.shift == TransmissionState.SHIFT_6;
-
-        boolean pedalClutch = self.clutch;
-        boolean pedalBrake = self.brake;
-        boolean pedalGas = self.gas;
+        boolean steerLeft  = TFMGSteeringState.isLeft(pos);
+        boolean steerRight = TFMGSteeringState.isRight(pos);
 
         TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.STEER_LEFT, steerLeft);
         TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.STEER_RIGHT, steerRight);
 
-        TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.ENGINE_STARTED, engineStarted);
+        TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.ENGINE_STARTED, self.engineStarted);
 
-        TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.SHIFT_REVERSE, shiftReverse);
-        TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.SHIFT_NEUTRAL, shiftNeutral);
-        TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.SHIFT_1, shift1);
-        TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.SHIFT_2, shift2);
-        TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.SHIFT_3, shift3);
-        TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.SHIFT_4, shift4);
-        TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.SHIFT_5, shift5);
-        TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.SHIFT_6, shift6);
+        TransmissionState s = self.shift;
+        TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.SHIFT_REVERSE, s == TransmissionState.REVERSE);
+        TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.SHIFT_NEUTRAL, s == TransmissionState.NEUTRAL);
+        TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.SHIFT_1, s == TransmissionState.SHIFT_1);
+        TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.SHIFT_2, s == TransmissionState.SHIFT_2);
+        TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.SHIFT_3, s == TransmissionState.SHIFT_3);
+        TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.SHIFT_4, s == TransmissionState.SHIFT_4);
+        TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.SHIFT_5, s == TransmissionState.SHIFT_5);
+        TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.SHIFT_6, s == TransmissionState.SHIFT_6);
 
-        TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.PEDAL_CLUTCH, pedalClutch);
-        TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.PEDAL_BRAKE, pedalBrake);
-        TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.PEDAL_GAS, pedalGas);
+        TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.PEDAL_CLUTCH, self.clutch);
+        TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.PEDAL_BRAKE, self.brake);
+        TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.PEDAL_GAS, self.gas);
     }
 
     @Inject(method = "remove", at = @At("HEAD"), remap = false)
-    private void drivebywire$reset(CallbackInfo ci) {
+    private void drivebywire$cleanup(CallbackInfo ci) {
         EngineControllerBlockEntity self = (EngineControllerBlockEntity)(Object)this;
         Level level = self.getLevel();
         if (level != null && !level.isClientSide) {
+            TFMGSteeringState.clear(self.getBlockPos());
             TFMGEngineControllerWireServerHandler.reset(level, self.getBlockPos());
         }
     }

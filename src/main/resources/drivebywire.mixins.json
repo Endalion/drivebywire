@@ -16,7 +16,9 @@
     "compat.tfmg.MixinTFMGEngineControllerBlockEntity"
   ],
   "client": [
-    "client.MixinSnqHandler"
+    "client.MixinSnqHandler",
+    "client.TFMGEngineControllerClientHandlerMixin",
+    "client.TFMGEngineControllerClientSteeringMixin"
   ],
   "injectors": {
     "defaultRequire": 1
