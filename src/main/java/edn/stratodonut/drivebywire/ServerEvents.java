@@ -3,19 +3,18 @@ package edn.stratodonut.drivebywire;
 import edn.stratodonut.drivebywire.compat.LinkedControllerWireServerHandler;
 import edn.stratodonut.drivebywire.compat.TweakedControllerWireServerHandler;
 import edn.stratodonut.drivebywire.wire.ShipWireNetworkManager;
+import edn.stratodonut.drivebywire.wire.WorldChannelSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 import org.valkyrienskies.core.api.ships.LoadedServerShip;
-import org.valkyrienskies.core.api.ships.ServerShip;
 import org.valkyrienskies.core.api.ships.Ship;
 import org.valkyrienskies.mod.common.VSGameUtilsKt;
 
@@ -51,7 +50,7 @@ public class ServerEvents {
                             .max(Comparator.naturalOrder())
                             .orElse(0);
                     ShipWireNetworkManager.get(ss).ifPresent(m -> m.setSource(level, event.getPos(),
-                            ShipWireNetworkManager.WORLD_REDSTONE_CHANNEL, maxSignal)
+                            WorldChannelSet.WORLD_REDSTONE_CHANNEL, maxSignal)
                     );
                 }
 
@@ -60,7 +59,7 @@ public class ServerEvents {
                     BlockState nState = level.getBlockState(nPos);
                     if (!nState.isSignalSource()) {
                         ShipWireNetworkManager.get(ss).ifPresent(m -> m.setSource(level, nPos,
-                                ShipWireNetworkManager.WORLD_REDSTONE_CHANNEL, level.getBestNeighborSignal(nPos))
+                                WorldChannelSet.WORLD_REDSTONE_CHANNEL, level.getBestNeighborSignal(nPos))
                         );
                     }
                 }

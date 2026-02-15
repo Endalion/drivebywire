@@ -1,6 +1,5 @@
 package edn.stratodonut.drivebywire.client;
 
-import com.simibubi.create.CreateClient;
 import com.simibubi.create.content.kinetics.mechanicalArm.ArmInteractionPoint;
 import edn.stratodonut.drivebywire.WireItems;
 import edn.stratodonut.drivebywire.WirePackets;
@@ -12,8 +11,10 @@ import edn.stratodonut.drivebywire.network.WireRemoveConnectionPacket;
 import edn.stratodonut.drivebywire.util.BlockFace;
 import edn.stratodonut.drivebywire.util.FaceOutlines;
 import edn.stratodonut.drivebywire.util.ImmutableHashMap;
+import edn.stratodonut.drivebywire.wire.IChannelSet;
 import edn.stratodonut.drivebywire.wire.MultiChannelWireSource;
 import edn.stratodonut.drivebywire.wire.ShipWireNetworkManager;
+import edn.stratodonut.drivebywire.wire.WorldChannelSet;
 import edn.stratodonut.drivebywire.wire.graph.WireNetworkNode.WireNetworkSink;
 import net.createmod.catnip.data.Pair;
 import net.createmod.catnip.outliner.Outliner;
@@ -61,7 +62,7 @@ public class ClientWireNetworkHandler {
     @Nullable
     static BlockPos selectedSource;
     @Nonnull
-    static String currentChannel = ShipWireNetworkManager.WORLD_REDSTONE_CHANNEL;
+    static IChannelSet channelSet = WorldChannelSet.INSTANCE;
 
     static long shipId = -1;
     @Nonnull
@@ -119,12 +120,12 @@ public class ClientWireNetworkHandler {
                     Map<String, Set<WireNetworkSink>> currentSelection = currentNetwork.get(selectedSource.asLong());
                     WireNetworkSink node = new WireNetworkSink(pos, side);
                     if (currentSelection != null &&
-                            (currentSelection.containsKey(currentChannel) && currentSelection.get(currentChannel).contains(node))) {
+                            (currentSelection.containsKey(channelSet.currentChannel()) && currentSelection.get(channelSet.currentChannel()).contains(node))) {
                         WirePackets.getChannel().sendToServer(new WireRemoveConnectionPacket(
-                                shipId, selectedSource, pos, side, currentChannel));
+                                shipId, selectedSource, pos, side, channelSet.currentChannel()));
                     } else {
                         WirePackets.getChannel().sendToServer(new WireAddConnectionPacket(
-                                shipId, selectedSource, pos, side, currentChannel));
+                                shipId, selectedSource, pos, side, channelSet.currentChannel()));
                     }
                 }
             }
@@ -173,7 +174,7 @@ public class ClientWireNetworkHandler {
         }
 
         if (selectedSource != null) drawOutline(player.level(), selectedSource, LineColor.SOURCE.SELECTED.getColor());
-        if (clientManagers.containsKey(shipId)) drawOutlines(player.level(), selectedSource, clientManagers.get(shipId).getNetwork(), currentChannel);
+        if (clientManagers.containsKey(shipId)) drawOutlines(player.level(), selectedSource, clientManagers.get(shipId).getNetwork(), channelSet.currentChannel());
     }
 
     @SubscribeEvent
@@ -193,18 +194,23 @@ public class ClientWireNetworkHandler {
 
     public static void changeChannel(Block source, boolean forward) {
         if (source instanceof MultiChannelWireSource channelWireSource) {
-            currentChannel = channelWireSource.wire$nextChannel(currentChannel, forward);
+            if (!channelSet.equals(channelWireSource.wire$getChannelSet())) channelSet = channelWireSource.wire$getChannelSet();
+            if (forward) {
+                channelSet.nextChannel();
+            } else {
+                channelSet.previousChannel();
+            }
         } else {
-            currentChannel = ShipWireNetworkManager.WORLD_REDSTONE_CHANNEL;
+            channelSet = WorldChannelSet.INSTANCE;
         }
         Player p = Minecraft.getInstance().player;
-        if (p != null) p.displayClientMessage(Component.literal("Selected Channel: " + currentChannel), true);
+        if (p != null) p.displayClientMessage(Component.literal("Selected Channel: " + channelSet.currentChannel()), true);
     }
 
     public static void clearSource() {
         currentNetwork = EMPTY_MAP;
         selectedSource = null;
-        currentChannel = ShipWireNetworkManager.WORLD_REDSTONE_CHANNEL;
+        channelSet = WorldChannelSet.INSTANCE;
         shipId = -1;
     }
 
@@ -328,6 +334,6 @@ public class ClientWireNetworkHandler {
     }
 
     public static @Nonnull String getCurrentChannel() {
-        return currentChannel;
+        return channelSet.currentChannel();
     }
 }

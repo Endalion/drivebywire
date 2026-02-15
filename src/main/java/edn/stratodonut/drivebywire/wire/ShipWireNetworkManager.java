@@ -1,7 +1,6 @@
 package edn.stratodonut.drivebywire.wire;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import edn.stratodonut.drivebywire.DriveByWireMod;
@@ -20,7 +19,6 @@ import net.minecraft.world.level.block.Rotation;
 
 import org.jetbrains.annotations.Contract;
 import org.valkyrienskies.core.api.ships.LoadedServerShip;
-import org.valkyrienskies.core.api.ships.ServerShip;
 import org.valkyrienskies.core.api.ships.Ship;
 import org.valkyrienskies.mod.common.VSGameUtilsKt;
 
@@ -34,9 +32,6 @@ import static org.valkyrienskies.mod.common.util.VectorConversionsMCKt.toMinecra
         fieldVisibility = JsonAutoDetect.Visibility.ANY
 )
 public final class ShipWireNetworkManager {
-    @JsonIgnore
-    public static final String WORLD_REDSTONE_CHANNEL = "world";
-
     @Nonnull
     private String name;
     private long origin;
@@ -115,7 +110,7 @@ public final class ShipWireNetworkManager {
         public String getDescription() { return this.literal; }
     }
     public static CONNECTION_RESULT createConnection(Level level, BlockPos in, BlockPos out, Direction dir) {
-        return ShipWireNetworkManager.createConnection(level, in, out, dir, WORLD_REDSTONE_CHANNEL);
+        return ShipWireNetworkManager.createConnection(level, in, out, dir, WorldChannelSet.WORLD_REDSTONE_CHANNEL);
     }
 
     public static CONNECTION_RESULT createConnection(Level level, BlockPos in, BlockPos out, Direction dir, String channel) {
@@ -140,7 +135,7 @@ public final class ShipWireNetworkManager {
     }
 
     public static void removeConnection(Level level, BlockPos in, BlockPos out, Direction dir) {
-        ShipWireNetworkManager.removeConnection(level, in, out, dir, WORLD_REDSTONE_CHANNEL);
+        ShipWireNetworkManager.removeConnection(level, in, out, dir, WorldChannelSet.WORLD_REDSTONE_CHANNEL);
     }
 
     public static void removeConnection(Level level, BlockPos in, BlockPos out, Direction dir, String channel) {

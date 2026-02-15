@@ -1,14 +1,12 @@
 package edn.stratodonut.drivebywire.blocks;
 
-import com.getitemfromblock.create_tweaked_controllers.item.ModItems;
 import com.simibubi.create.AllItems;
-import com.simibubi.create.AllShapes;
 import edn.stratodonut.drivebywire.WireSounds;
+import edn.stratodonut.drivebywire.wire.CircularChannels;
 import edn.stratodonut.drivebywire.util.HubItem;
+import edn.stratodonut.drivebywire.wire.IChannelSet;
 import edn.stratodonut.drivebywire.wire.MultiChannelWireSource;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -19,21 +17,20 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
-import java.util.List;
 
 import static edn.stratodonut.drivebywire.compat.LinkedControllerWireServerHandler.KEY_TO_CHANNEL;
 
 public class ControllerHubBlock extends Block implements MultiChannelWireSource {
     public static final VoxelShape BOTTOM_AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D);
 
-    private static final List<String> channels = Arrays.stream(KEY_TO_CHANNEL).toList();
+    private static final CircularChannels channels = new CircularChannels(Arrays.stream(KEY_TO_CHANNEL).toList());
 
     public ControllerHubBlock(Properties p_49795_) {
         super(p_49795_);
@@ -61,19 +58,9 @@ public class ControllerHubBlock extends Block implements MultiChannelWireSource 
         return BOTTOM_AABB;
     }
 
+    @Nonnull
     @Override
-    public List<String> wire$getChannels() {
+    public IChannelSet wire$getChannelSet() {
         return channels;
-    }
-
-    @NotNull
-    @Override
-    public String wire$nextChannel(String current, boolean forward) {
-        int curIndex = channels.indexOf(current);
-        if (curIndex == -1) {
-            return channels.get(0);
-        } else {
-            return channels.get(Math.floorMod(curIndex + (forward ? 1 : -1), channels.size()));
-        }
     }
 }

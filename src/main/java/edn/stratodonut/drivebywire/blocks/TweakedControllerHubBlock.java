@@ -2,7 +2,9 @@ package edn.stratodonut.drivebywire.blocks;
 
 import edn.stratodonut.drivebywire.WireSounds;
 import edn.stratodonut.drivebywire.mixinducks.TweakedControllerDuck;
+import edn.stratodonut.drivebywire.wire.CircularChannels;
 import edn.stratodonut.drivebywire.util.HubItem;
+import edn.stratodonut.drivebywire.wire.IChannelSet;
 import edn.stratodonut.drivebywire.wire.MultiChannelWireSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -23,7 +25,6 @@ import org.spongepowered.asm.mixin.Unique;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Stream;
 
 import static edn.stratodonut.drivebywire.compat.TweakedControllerWireServerHandler.AXIS_TO_CHANNEL;
@@ -31,8 +32,8 @@ import static edn.stratodonut.drivebywire.compat.TweakedControllerWireServerHand
 
 public class TweakedControllerHubBlock extends Block implements MultiChannelWireSource {
     @Unique
-    private static final List<String> channels =
-            Stream.concat(Arrays.stream(AXIS_TO_CHANNEL), Arrays.stream(BUTTON_TO_CHANNEL)).toList();
+    private static final CircularChannels channels =
+            new CircularChannels(Stream.concat(Arrays.stream(AXIS_TO_CHANNEL), Arrays.stream(BUTTON_TO_CHANNEL)).toList());
 
     public TweakedControllerHubBlock(Properties p_49795_) {
         super(p_49795_);
@@ -60,20 +61,10 @@ public class TweakedControllerHubBlock extends Block implements MultiChannelWire
         return ControllerHubBlock.BOTTOM_AABB;
     }
 
+    @Nonnull
     @Unique
     @Override
-    public List<String> wire$getChannels() {
+    public IChannelSet wire$getChannelSet() {
         return channels;
-    }
-
-    @Unique
-    @Override
-    public @Nonnull String wire$nextChannel(String current, boolean forward) {
-        int curIndex = channels.indexOf(current);
-        if (curIndex == -1) {
-            return channels.get(0);
-        } else {
-            return channels.get(Math.floorMod(curIndex + (forward ? 1 : -1), channels.size()));
-        }
     }
 }
