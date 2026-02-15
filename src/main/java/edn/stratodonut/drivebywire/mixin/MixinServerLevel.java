@@ -7,6 +7,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
@@ -32,14 +33,34 @@ public abstract class MixinServerLevel extends Level {
         
         Ship s = VSGameUtilsKt.getShipObjectManagingPos((ServerLevel)(Object) this, target);
         if (s instanceof LoadedServerShip serverShip) {
-            original = Math.max(
+            int networkValue = Math.max(
                     original,
                     ShipWireNetworkManager.get(serverShip)
                             .map(m -> m.getSignalAt(target, direction))
                             .orElse(0)
             );
+            return Mth.clamp(networkValue, 0, 15);
         }
         
+        return original;
+    }
+
+    @Override
+    public int getDirectSignal(BlockPos pos, Direction direction) {
+        int original = super.getDirectSignal(pos, direction);
+        BlockPos target = pos.relative(direction.getOpposite());
+
+        Ship s = VSGameUtilsKt.getShipObjectManagingPos((ServerLevel)(Object) this, target);
+        if (s instanceof LoadedServerShip serverShip) {
+            int networkValue = Math.max(
+                    original,
+                    ShipWireNetworkManager.get(serverShip)
+                            .map(m -> m.getSignalAt(target, direction))
+                            .orElse(0)
+            );
+            return Mth.clamp(networkValue, 0, 15);
+        }
+
         return original;
     }
 }
