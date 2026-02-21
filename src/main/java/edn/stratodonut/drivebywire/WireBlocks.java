@@ -6,6 +6,7 @@ import com.simibubi.create.foundation.data.BlockStateGen;
 import com.simibubi.create.foundation.data.SharedProperties;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import edn.stratodonut.drivebywire.blocks.ControllerHubBlock;
+import edn.stratodonut.drivebywire.blocks.TFMGEngineControllerHubBlock;
 import edn.stratodonut.drivebywire.blocks.TweakedControllerHubBlock;
 import edn.stratodonut.drivebywire.blocks.WireNetworkBackupBlock;
 import net.minecraft.resources.ResourceLocation;
@@ -35,6 +36,13 @@ public class WireBlocks {
 
     public static final BlockEntry<TweakedControllerHubBlock> TWEAKED_HUB =
             REGISTRATE.block("tweaked_controller_hub", TweakedControllerHubBlock::new)
+                    .initialProperties(SharedProperties::copperMetal)
+                    .transform(axeOrPickaxe())
+                    .simpleItem()
+                    .register();
+
+    public static final BlockEntry<TFMGEngineControllerHubBlock> TFMG_ENGINE_CONTROLLER_HUB =
+            REGISTRATE.block("tfmg_engine_controller_hub", TFMGEngineControllerHubBlock::new)
                     .initialProperties(SharedProperties::copperMetal)
                     .transform(axeOrPickaxe())
                     .simpleItem()

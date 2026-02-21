@@ -22,7 +22,9 @@ public enum WirePackets {
     CREATE_CONNECTION(WireAddConnectionPacket.class, WireAddConnectionPacket::new, PLAY_TO_SERVER),
     REMOVE_CONNECTION(WireRemoveConnectionPacket.class, WireRemoveConnectionPacket::new, PLAY_TO_SERVER),
     REQUEST_SYNC(WireNetworkRequestSyncPacket.class, WireNetworkRequestSyncPacket::new, PLAY_TO_SERVER),
-    LINK_NETWORKS(WireLinkNetworksPacket .class, WireLinkNetworksPacket::new, PLAY_TO_SERVER);
+    LINK_NETWORKS(WireLinkNetworksPacket .class, WireLinkNetworksPacket::new, PLAY_TO_SERVER),
+
+    TFMG_STEERING_INPUT(TFMGSteeringInputPacket.class, TFMGSteeringInputPacket::new, PLAY_TO_SERVER);
 
     // DO NOT TOUCH ANYTHING BELOW THIS LINE, THANKS CREATE
 
@@ -47,6 +49,8 @@ public enum WirePackets {
 
         for (WirePackets packet : values())
             packet.packetType.register();
+
+        System.out.println("[DBW] Packets registered");
     }
 
     public static SimpleChannel getChannel() {
