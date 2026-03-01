@@ -33,6 +33,20 @@ public class TFMGEngineControllerWireServerHandler {
         );
     }
 
+    public static void setAnalog(Level level, BlockPos pos, String channel, float value) {
+        // clamp between 0 and 1
+        float clamped = Math.max(0f, Math.min(1f, value));
+
+        int strength = (int)(clamped * 15f);
+
+        ShipWireNetworkManager.trySetSignalAt(
+                level,
+                pos,
+                channel,
+                strength
+        );
+    }
+
     public static void reset(Level level, BlockPos pos) {
         set(level, pos, STEER_LEFT, false);
         set(level, pos, STEER_RIGHT, false);

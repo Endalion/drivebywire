@@ -24,11 +24,12 @@ public abstract class MixinTFMGEngineControllerBlockEntity {
 
         BlockPos pos = self.getBlockPos();
 
-        boolean steerLeft  = TFMGSteeringState.isLeft(pos);
-        boolean steerRight = TFMGSteeringState.isRight(pos);
+        float steer = TFMGSteeringState.getSteer(pos);
+        float leftSteerSignal  = steer < 0 ? -steer : 0f;
+        float rightSteerSignal = steer > 0 ?  steer : 0f;
 
-        TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.STEER_LEFT, steerLeft);
-        TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.STEER_RIGHT, steerRight);
+        TFMGEngineControllerWireServerHandler.setAnalog(level, pos, TFMGEngineControllerWireServerHandler.STEER_LEFT, leftSteerSignal);
+        TFMGEngineControllerWireServerHandler.setAnalog(level, pos, TFMGEngineControllerWireServerHandler.STEER_RIGHT, rightSteerSignal);
 
         TFMGEngineControllerWireServerHandler.set(level, pos, TFMGEngineControllerWireServerHandler.ENGINE_STARTED, self.engineStarted);
 

@@ -20,6 +20,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(EngineControllerBlockEntity.class)
 public abstract class TFMGEngineControllerClientSteeringMixin {
 
+    private float drivebywire$lastSent = 0f;
+
     @Inject(method = "tick", at = @At("TAIL"), remap = false)
     private void drivebywire$captureSteering(CallbackInfo ci) {
         EngineControllerBlockEntity self = (EngineControllerBlockEntity)(Object)this;
@@ -32,18 +34,34 @@ public abstract class TFMGEngineControllerClientSteeringMixin {
 
         float angle = self.steeringWheelAngle.getValue();
 
-        final float CENTER_EPS = 4.0f;
-
-        // force-center early
-        if (Math.abs(angle) < CENTER_EPS) {
-            angle = 0.0f;
+        final float DEADZONE = 4.0f;
+        if (Math.abs(angle) < DEADZONE) {
+            angle = 0f;
         }
 
-        boolean left  = angle < 0;
-        boolean right = angle > 0;
+        final float MAX_STEER = 38f;
+        float normalized = angle / MAX_STEER;
+        normalized = Math.max(-1f, Math.min(1f, normalized));
+
+        float delta = Math.abs(normalized - drivebywire$lastSent);
+
+        if (normalized == 0f && drivebywire$lastSent != 0f) {
+            drivebywire$lastSent = 0f;
+
+            WirePackets.getChannel().sendToServer(
+                    new TFMGSteeringInputPacket(self.getBlockPos(), 0f)
+            );
+            return;
+        }
+
+        if (delta < 0.02f) {
+            return;
+        }
+
+        drivebywire$lastSent = normalized;
 
         WirePackets.getChannel().sendToServer(
-                new TFMGSteeringInputPacket(self.getBlockPos(), left, right)
+                new TFMGSteeringInputPacket(self.getBlockPos(), normalized)
         );
     }
 }

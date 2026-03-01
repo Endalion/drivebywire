@@ -10,26 +10,22 @@ import net.minecraftforge.network.NetworkEvent;
 public class TFMGSteeringInputPacket extends SimplePacketBase {
 
     private final BlockPos pos;
-    private final boolean left;
-    private final boolean right;
+    float steering;
 
-    public TFMGSteeringInputPacket(BlockPos pos, boolean left, boolean right) {
+    public TFMGSteeringInputPacket(BlockPos pos, float steering) {
         this.pos = pos;
-        this.left = left;
-        this.right = right;
+        this.steering = steering;
     }
 
     public TFMGSteeringInputPacket(FriendlyByteBuf buf) {
         this.pos = buf.readBlockPos();
-        this.left = buf.readBoolean();
-        this.right = buf.readBoolean();
+        this.steering = buf.readFloat();
     }
 
     @Override
     public void write(FriendlyByteBuf buf) {
         buf.writeBlockPos(pos);
-        buf.writeBoolean(left);
-        buf.writeBoolean(right);
+        buf.writeFloat(steering);
     }
 
     @Override
@@ -38,7 +34,7 @@ public class TFMGSteeringInputPacket extends SimplePacketBase {
             ServerPlayer player = ctx.getSender();
             if (player == null) return;
 
-            TFMGSteeringState.set(pos, left, right);
+            TFMGSteeringState.set(pos, steering);
         });
         return true;
     }

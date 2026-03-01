@@ -7,24 +7,17 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class TFMGSteeringState {
 
-    private static final Map<BlockPos, Boolean> LEFT  = new ConcurrentHashMap<>();
-    private static final Map<BlockPos, Boolean> RIGHT = new ConcurrentHashMap<>();
+    private static final Map<BlockPos, Float> STEER  = new ConcurrentHashMap<>();
 
-    public static void set(BlockPos pos, boolean left, boolean right) {
-        LEFT.put(pos, left);
-        RIGHT.put(pos, right);
+    public static void set(BlockPos pos, float steer) {
+        STEER.put(pos, steer);
     }
 
-    public static boolean isLeft(BlockPos pos) {
-        return LEFT.getOrDefault(pos, false);
-    }
-
-    public static boolean isRight(BlockPos pos) {
-        return RIGHT.getOrDefault(pos, false);
+    public static float getSteer(BlockPos pos) {
+        return STEER.getOrDefault(pos, 0f);
     }
 
     public static void clear(BlockPos pos) {
-        LEFT.remove(pos);
-        RIGHT.remove(pos);
+        STEER.remove(pos);
     }
 }
