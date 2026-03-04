@@ -114,8 +114,12 @@ public class WireNetworkNode {
             }
 
             WireNetworkNode n = parentManager.getOrCreateNodeAt(getPosition(), getDirection());
+            BlockPos to = BlockPos.of(getPosition());
             BlockPos from = BlockPos.of(getPosition()).relative(Direction.from3DDataValue(getDirection()));
-            if (n.setInput(channel, signal)) level.updateNeighborsAt(from, level.getBlockState(from).getBlock());
+            if (n.setInput(channel, signal)) {
+                level.updateNeighborsAt(from, level.getBlockState(from).getBlock());
+                level.updateNeighborsAt(to, level.getBlockState(to).getBlock());
+            }
         }
 
         public long getRelativePositionInParent() {
