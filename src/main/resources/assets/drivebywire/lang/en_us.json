@@ -12,7 +12,10 @@
   "block.drivebywire.backup_block.tooltip.summary" : "Saves the ship network when put in a schematic, and loads when shipified",
   "block.drivebywire.controller_hub.tooltip.summary" : "Bind your controller to this block, and control this network from far away!",
   "block.drivebywire.tweaked_controller_hub.tooltip.summary" : "Bind your controller to this block, and control this network from far away!",
-  
+
+  "drivebywire.ponder.tag.signal_sources" : "Multi-channel Sources",
+  "drivebywire.ponder.tag.signal_sources.description" : "Components which emit signals on multiple channels",
+
   "drivebywire.ponder.wires.header" : "Cable networks 101",
   "drivebywire.ponder.wires.text_1" : "Disclaimer: Cable networks only work on assembled VS2 ships!",
   "drivebywire.ponder.wires.text_2" : "Connect a redstone source to a block,",
