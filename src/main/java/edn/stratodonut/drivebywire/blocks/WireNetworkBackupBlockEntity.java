@@ -5,6 +5,8 @@ import edn.stratodonut.drivebywire.wire.ShipWireNetworkManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -12,18 +14,28 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import org.valkyrienskies.core.api.ships.LoadedServerShip;
-import org.valkyrienskies.core.api.ships.ServerShip;
 import org.valkyrienskies.core.api.ships.Ship;
 import org.valkyrienskies.mod.common.VSGameUtilsKt;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class WireNetworkBackupBlockEntity extends BlockEntity {
+    @Nullable
     private CompoundTag pendingBackupData;
 
     public WireNetworkBackupBlockEntity(BlockEntityType<?> p_155228_, BlockPos p_155229_, BlockState p_155230_) {
         super(p_155228_, p_155229_, p_155230_);
+    }
+
+    public boolean tryLoadPendingData() {
+        if (pendingBackupData == null || this.level.isClientSide) return true;
+        if (!(VSGameUtilsKt.getLoadedShipManagingPos(this.level, this.getBlockPos()) instanceof LoadedServerShip ss)) return false;
+
+        ShipWireNetworkManager.loadIfNotExists(ss, this.level, pendingBackupData,
+                this.getBlockPos(), Rotation.NONE);
+        return true;
     }
 
     @Override
@@ -32,11 +44,13 @@ public class WireNetworkBackupBlockEntity extends BlockEntity {
         // If level is clientside, then we still want to save because schematics save on client thread, which is such a mess
         if (level == null) return;
 
-        Ship s = VSGameUtilsKt.getShipObjectManagingPos(level, this.getBlockPos());
+        Ship s = VSGameUtilsKt.getLoadedShipManagingPos(level, this.getBlockPos());
         if (s instanceof LoadedServerShip ss) {
-            if (pendingBackupData == null) pendingBackupData = new CompoundTag();
             ShipWireNetworkManager.get(ss).ifPresent(
-                    m -> pendingBackupData.merge(m.serialiseToNbt(level, this.getBlockPos()))
+                    m -> {
+                        if (pendingBackupData == null) pendingBackupData = new CompoundTag();
+                        pendingBackupData.merge(m.serialiseToNbt(level, this.getBlockPos()));
+                    }
             );
         } else if (s != null && level.isClientSide) {
             List<ShipWireNetworkManager> t = new ArrayList<>();
@@ -56,6 +70,11 @@ public class WireNetworkBackupBlockEntity extends BlockEntity {
         if (VSGameUtilsKt.getShipObjectManagingPos(this.level, this.getBlockPos()) instanceof LoadedServerShip ss) {
             ShipWireNetworkManager.loadIfNotExists(ss, this.level, p_155245_.getCompound("WireNetwork"),
                     this.getBlockPos(), Rotation.NONE);
+        } else {
+            Block b = this.getBlockState().getBlock();
+            if (this.level instanceof ServerLevel sll && b instanceof WireNetworkBackupBlock wnbe) {
+                wnbe.scheduleLoadAttempt(sll, this.worldPosition);
+            }
         }
         pendingBackupData = p_155245_.getCompound("WireNetwork");
     }

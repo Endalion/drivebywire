@@ -1,51 +1,34 @@
 package edn.stratodonut.drivebywire.blocks;
 
-import com.simibubi.create.content.contraptions.actors.AttachedActorBlock;
 import com.simibubi.create.foundation.block.IBE;
 import edn.stratodonut.drivebywire.WireBlockEntities;
-import edn.stratodonut.drivebywire.wire.ShipWireNetworkManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import org.valkyrienskies.core.api.ships.ServerShip;
-import org.valkyrienskies.core.api.ships.Ship;
-import org.valkyrienskies.mod.common.VSGameUtilsKt;
 
 public class WireNetworkBackupBlock extends HorizontalDirectionalBlock implements IBE<WireNetworkBackupBlockEntity> {
     public WireNetworkBackupBlock(Properties p_49795_) {
         super(p_49795_);
     }
 
-//    @Override
-//    public void onPlace(BlockState p_60566_, Level level, BlockPos pos, BlockState p_60569_, boolean p_60570_) {
-//        super.onPlace(p_60566_, level, pos, p_60569_, p_60570_);
-//        if (level.isClientSide) return;
-//
-//        Ship s = VSGameUtilsKt.getShipManagingPos(level, pos);
-//        if (s instanceof ServerShip ss) {
-//            if (ShipWireNetworkManager.get(ss).map(m -> m.backupBlockPlaced(level, pos)).orElse(false)) {
-//                level.destroyBlock(pos, true);
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public void onRemove(BlockState p_60515_, Level level, BlockPos pos, BlockState p_60518_, boolean p_60519_) {
-//        super.onRemove(p_60515_, level, pos, p_60518_, p_60519_);
-//        if (level.isClientSide) return;
-//
-//        Ship s = VSGameUtilsKt.getShipManagingPos(level, pos);
-//        if (s instanceof ServerShip ss) {
-//            ShipWireNetworkManager.get(ss).ifPresent(m -> m.backupBlockRemoved(pos));
-//        }
-//    }
+    @Override
+    public void tick(BlockState state, ServerLevel serverLevel, BlockPos pos, RandomSource random) {
+        this.withBlockEntityDo(serverLevel, pos, wnbbe -> {
+            if (!wnbbe.tryLoadPendingData()) this.scheduleLoadAttempt(serverLevel, pos);
+        });
+    }
+
+    public void scheduleLoadAttempt(ServerLevel serverLevel, BlockPos pos) {
+        serverLevel.scheduleTick(pos, this, 10);
+    }
 
     @Override
     public BlockEntity newBlockEntity(BlockPos p_153215_, BlockState p_153216_) {
