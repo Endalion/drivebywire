@@ -21,9 +21,7 @@ public class WireNetworkBackupBlock extends HorizontalDirectionalBlock implement
 
     @Override
     public void tick(BlockState state, ServerLevel serverLevel, BlockPos pos, RandomSource random) {
-        this.withBlockEntityDo(serverLevel, pos, wnbbe -> {
-            if (!wnbbe.tryLoadPendingData()) this.scheduleLoadAttempt(serverLevel, pos);
-        });
+        this.withBlockEntityDo(serverLevel, pos, WireNetworkBackupBlockEntity::tryLoadPendingData);
     }
 
     public void scheduleLoadAttempt(ServerLevel serverLevel, BlockPos pos) {

@@ -22,20 +22,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WireNetworkBackupBlockEntity extends BlockEntity {
+    private static final int MAX_LOAD_ATTEMPTS = 5;
+
     @Nullable
     private CompoundTag pendingBackupData;
+    private int loadAttemptsLeft = 0;
 
     public WireNetworkBackupBlockEntity(BlockEntityType<?> p_155228_, BlockPos p_155229_, BlockState p_155230_) {
         super(p_155228_, p_155229_, p_155230_);
     }
 
-    public boolean tryLoadPendingData() {
-        if (pendingBackupData == null || this.level.isClientSide) return true;
-        if (!(VSGameUtilsKt.getLoadedShipManagingPos(this.level, this.getBlockPos()) instanceof LoadedServerShip ss)) return false;
+    public void tryLoadPendingData() {
+        if (pendingBackupData == null || this.level.isClientSide) return;
+        if (!(VSGameUtilsKt.getLoadedShipManagingPos(this.level, this.getBlockPos()) instanceof LoadedServerShip ss)) {
+            if (loadAttemptsLeft == 0) return;
+            Block b = this.getBlockState().getBlock();
+            if (this.level instanceof ServerLevel sll && b instanceof WireNetworkBackupBlock wnbe) {
+                wnbe.scheduleLoadAttempt(sll, this.worldPosition);
+            }
+            loadAttemptsLeft--;
+            return;
+        }
 
+        loadAttemptsLeft = 0;
         ShipWireNetworkManager.loadIfNotExists(ss, this.level, pendingBackupData,
                 this.getBlockPos(), Rotation.NONE);
-        return true;
     }
 
     @Override
@@ -71,6 +82,7 @@ public class WireNetworkBackupBlockEntity extends BlockEntity {
             ShipWireNetworkManager.loadIfNotExists(ss, this.level, p_155245_.getCompound("WireNetwork"),
                     this.getBlockPos(), Rotation.NONE);
         } else {
+            loadAttemptsLeft = MAX_LOAD_ATTEMPTS;
             Block b = this.getBlockState().getBlock();
             if (this.level instanceof ServerLevel sll && b instanceof WireNetworkBackupBlock wnbe) {
                 wnbe.scheduleLoadAttempt(sll, this.worldPosition);
