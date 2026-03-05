@@ -228,13 +228,12 @@ dependencies {
     implementation fg.deobf("maven.modrinth:create-tweaked-controllers:1.20.1-1.2.5")
 
     //runtimeOnly fg.deobf("maven.modrinth:eureka:9gbnRz82")
-    runtimeOnly fg.deobf("maven.modrinth:vlib:1.20.1-0.1.0+forge")
-    runtimeOnly fg.deobf("org.valkyrienskies:clockwork-forge:1.20.1-0.4.0-forge-a764c6701b") {transitive = false }
+    runtimeOnly fg.deobf("maven.modrinth:vlib:lEFffQqd")
+    runtimeOnly fg.deobf("org.valkyrienskies:clockwork-forge:1.20.1-0.5.4.6-forge-61ae2c236c") {transitive = false }
     runtimeOnly fg.deobf("org.valkyrienskies.kelvin:kelvin-forge:${rootProject.minecraft_version}-${rootProject.kelvin_version}") {
         transitive = false
     }
-    
-//    runtimeOnly fg.deobf("maven.modrinth:vmod:mGgUMpre")
+
     runtimeOnly fg.deobf("maven.modrinth:architectury-api:1MKTLiiG")
 
     // For more info:
