@@ -4,6 +4,7 @@ import com.simibubi.create.content.kinetics.mechanicalArm.ArmInteractionPoint;
 import edn.stratodonut.drivebywire.WireItems;
 import edn.stratodonut.drivebywire.WirePackets;
 import edn.stratodonut.drivebywire.blocks.WireNetworkBackupBlock;
+import edn.stratodonut.drivebywire.compat.TweakedControllerWireServerHandler;
 import edn.stratodonut.drivebywire.network.WireAddConnectionPacket;
 import edn.stratodonut.drivebywire.network.WireLinkNetworksPacket;
 import edn.stratodonut.drivebywire.network.WireNetworkRequestSyncPacket;
@@ -194,7 +195,9 @@ public class ClientWireNetworkHandler {
 
     public static void changeChannel(Block source, boolean forward) {
         if (source instanceof MultiChannelWireSource channelWireSource) {
-            if (!channelSet.equals(channelWireSource.wire$getChannelSet())) channelSet = channelWireSource.wire$getChannelSet();
+            if (!channelSet.equals(channelWireSource.wire$getChannelSet())) {
+                channelSet = channelWireSource.wire$getChannelSet();
+            }
             if (forward) {
                 channelSet.nextChannel();
             } else {
@@ -203,8 +206,23 @@ public class ClientWireNetworkHandler {
         } else {
             channelSet = WorldChannelSet.INSTANCE;
         }
-        Player p = Minecraft.getInstance().player;
-        if (p != null) p.displayClientMessage(Component.literal("Selected Channel: " + channelSet.currentChannel()), true);
+
+        String currentChannel = channelSet.currentChannel();
+
+        Player player = Minecraft.getInstance().player;
+        if (player != null) {
+            // 新版完整映射逻辑（后续添加类即可自动生效）
+            String langKey = currentChannel;
+            try {
+                langKey = TweakedControllerWireServerHandler.CHANNEL_TO_LANG_KEY.getOrDefault(currentChannel, currentChannel);
+            } catch (Exception ignored) {}
+
+            Component displayName = Component.translatable(langKey);
+            player.displayClientMessage(
+                    Component.translatable("drivebywire.wire.channel.selected", displayName),
+                    true
+            );
+        }
     }
 
     public static void clearSource() {
