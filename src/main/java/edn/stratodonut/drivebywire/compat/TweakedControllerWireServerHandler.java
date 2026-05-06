@@ -41,6 +41,48 @@ public class TweakedControllerWireServerHandler {
             "axisTriggerLeft",
             "axisTriggerRight"
     };
+    // ==============================================
+    // 强绑定：内部名 → 多语言键（一一对应，永不乱序）
+    // ==============================================
+    public static final Map<String, String> CHANNEL_TO_LANG_KEY = Map.ofEntries(
+            Map.entry("world","drivebywire.wire.channel.world"),
+            // 按钮映射
+            Map.entry("buttonA", "drivebywire.controller.button.a"),
+            Map.entry("buttonB", "drivebywire.controller.button.b"),
+            Map.entry("buttonX", "drivebywire.controller.button.x"),
+            Map.entry("buttonY", "drivebywire.controller.button.y"),
+            Map.entry("shoulderLeft", "drivebywire.controller.button.shoulder_left"),
+            Map.entry("shoulderRight", "drivebywire.controller.button.shoulder_right"),
+            Map.entry("buttonBack", "drivebywire.controller.button.back"),
+            Map.entry("buttonStart", "drivebywire.controller.button.start"),
+            Map.entry("buttonGuide", "drivebywire.controller.button.guide"),
+            Map.entry("leftJoyStickClick", "drivebywire.controller.button.left_joystick_click"),
+            Map.entry("rightJoyStickClick", "drivebywire.controller.button.right_joystick_click"),
+            Map.entry("dPadUp", "drivebywire.controller.button.dpad_up"),
+            Map.entry("dPadRight", "drivebywire.controller.button.dpad_right"),
+            Map.entry("dPadDown", "drivebywire.controller.button.dpad_down"),
+            Map.entry("dPadLeft", "drivebywire.controller.button.dpad_left"),
+
+            // 轴映射
+            Map.entry("axisLeftX+", "drivebywire.controller.axis.left_x_positive"),
+            Map.entry("axisLeftX-", "drivebywire.controller.axis.left_x_negative"),
+            Map.entry("axisLeftY+", "drivebywire.controller.axis.left_y_positive"),
+            Map.entry("axisLeftY-", "drivebywire.controller.axis.left_y_negative"),
+            Map.entry("axisRightX+", "drivebywire.controller.axis.right_x_positive"),
+            Map.entry("axisRightX-", "drivebywire.controller.axis.right_x_negative"),
+            Map.entry("axisRightY+", "drivebywire.controller.axis.right_y_positive"),
+            Map.entry("axisRightY-", "drivebywire.controller.axis.right_y_negative"),
+            Map.entry("axisTriggerLeft", "drivebywire.controller.axis.left_trigger"),
+            Map.entry("axisTriggerRight", "drivebywire.controller.axis.right_trigger"),
+
+            // 键盘按键映射
+            Map.entry("keyUp",    "drivebywire.controller.key.up"),
+            Map.entry("keyDown",  "drivebywire.controller.key.down"),
+            Map.entry("keyLeft",  "drivebywire.controller.key.left"),
+            Map.entry("keyRight", "drivebywire.controller.key.right"),
+            Map.entry("keyJump",  "drivebywire.controller.key.jump"),
+            Map.entry("keyShift", "drivebywire.controller.key.shift")
+    );
 
     static final WorldAttached<Map<Pair<BlockPos, Integer>, Integer>> timeoutButtonMap = new WorldAttached<>(k -> new HashMap<>());
     static final WorldAttached<Map<Pair<BlockPos, Integer>, Integer>> timeoutAxisMap = new WorldAttached<>(k -> new HashMap<>());
