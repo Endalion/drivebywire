@@ -93,7 +93,9 @@ public class ControllerHubPeripheral implements IPeripheral {
 
         ShipWireNetworkManager manager = ShipWireNetworkManager.getOrCreate(ship);
 
-        return manager.getStaticSinks().getOrDefault(pos.asLong(), Map.of(channel, 0)).get(channel);
+        Map<String, Integer> channelValues = manager.getStaticSinks().getOrDefault(pos.asLong(), Map.of());
+        if (!channelValues.containsKey(channel)) throw new LuaException("Channel '"+channel+"' not found");
+        return channelValues.get(channel);
     }
 
     @LuaFunction(mainThread = true)
@@ -112,7 +114,7 @@ public class ControllerHubPeripheral implements IPeripheral {
         // Shouldn't be possible
         if (!(sinks.containsKey(pos.asLong()))) return;
 
-        if (!(sinks.get(pos.asLong()).containsKey(channel))) throw new LuaException("Channel '"+channel+"' was unknown, or does not have a cable connected (This is a limitation of this peripheral)");
+        if (!(sinks.get(pos.asLong()).containsKey(channel))) throw new LuaException("Channel '"+channel+"' was unknown, or does not have a cable connected.");
 
         manager.setSource(level, pos, channel, value);
     }
