@@ -3,10 +3,9 @@ package edn.stratodonut.drivebywire;
 import com.mojang.logging.LogUtils;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.item.ItemDescription;
-import com.simibubi.create.foundation.item.TooltipHelper;
+import edn.stratodonut.drivebywire.compat.cc.GenericPeripherals;
 import edn.stratodonut.drivebywire.wire.ShipWireNetworkManager;
 import net.createmod.catnip.lang.FontHelper;
-import net.createmod.ponder.api.registration.PonderPlugin;
 import net.createmod.ponder.foundation.PonderIndex;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -18,8 +17,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 import org.valkyrienskies.mod.api.ValkyrienSkies;
-import org.valkyrienskies.mod.common.VSGameUtilsKt;
-import org.valkyrienskies.mod.common.ValkyrienSkiesMod;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("drivebywire")
@@ -58,6 +55,10 @@ public class DriveByWireMod
         WireBlockEntities.register();
         WireItems.register();
         WirePackets.registerPackets();
+
+        if (LoadedMods.COMPUTER_CRAFT.isLoaded()) {
+            GenericPeripherals.register();
+        }
 
         WireSounds.register(modEventBus);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> this::onCtorClient);

@@ -1,6 +1,9 @@
 package edn.stratodonut.drivebywire.wire;
 
+import edn.stratodonut.drivebywire.compat.cc.ControllerHubPeripheral;
+
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CircularChannels implements IChannelSet {
@@ -32,5 +35,13 @@ public class CircularChannels implements IChannelSet {
     public boolean equals(Object obj) {
         if (!(obj instanceof CircularChannels)) return false;
         return ((CircularChannels) obj).channels.equals(this.channels);
+    }
+
+    /**
+     * Used for the CC tweaked compat.
+     * @see {@link ControllerHubPeripheral#listChannels()}
+     */
+    public List<String> allChannels() {
+        return new ArrayList<>(channels);
     }
 }

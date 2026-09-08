@@ -6,7 +6,8 @@ import net.minecraftforge.fml.loading.LoadingModList;
 import java.util.function.Supplier;
 
 public enum LoadedMods {
-    TWEAKED_CONTROLLERS("create_tweaked_controllers");
+    TWEAKED_CONTROLLERS("create_tweaked_controllers"),
+    COMPUTER_CRAFT("computercraft");
 
     private final String id;
     LoadedMods(String mod_id) { id = mod_id; }

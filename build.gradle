@@ -234,6 +234,11 @@ dependencies {
         transitive = false
     }
 
+    // Forge Gradle
+    compileOnly("cc.tweaked:cc-tweaked-$minecraft_version-core-api:$cctVersion")
+    compileOnly(fg.deobf("cc.tweaked:cc-tweaked-$minecraft_version-forge-api:$cctVersion"))
+    runtimeOnly(fg.deobf("cc.tweaked:cc-tweaked-$minecraft_version-forge:$cctVersion"))
+
     runtimeOnly fg.deobf("maven.modrinth:architectury-api:1MKTLiiG")
 
     // For more info:

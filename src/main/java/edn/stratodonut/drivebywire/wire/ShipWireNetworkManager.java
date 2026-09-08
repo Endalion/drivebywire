@@ -3,6 +3,7 @@ package edn.stratodonut.drivebywire.wire;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.mojang.datafixers.util.Pair;
 import edn.stratodonut.drivebywire.DriveByWireMod;
 import edn.stratodonut.drivebywire.jackson.BlockFaceDeserializer;
 import edn.stratodonut.drivebywire.jackson.BlockFaceSerializer;
@@ -24,6 +25,7 @@ import org.valkyrienskies.mod.common.VSGameUtilsKt;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static org.valkyrienskies.mod.common.util.VectorConversionsMCKt.toMinecraft;
@@ -38,6 +40,20 @@ public final class ShipWireNetworkManager {
 
     @Nonnull
     public final Long shipId;
+
+    // This is stored for the sake of the Computer Craft peripheral
+    // Basically they listen in on the channels changing even if there's no blocks attached to read the channel
+    private final Map<Long, Map<String, Integer>> staticSinks = new HashMap<>();
+    public Map<Long, Map<String, Integer>> getStaticSinks() {
+        return new HashMap<>(staticSinks);
+    }
+
+    // This is triggered when an input changes so we can emit a lua event from peripherals attached
+    private final List<Consumer<Pair<String, Integer>>> changeListeners = new ArrayList<>();
+
+    public void addChangeListener(Consumer<Pair<String, Integer>> listener) {
+        changeListeners.add(listener);
+    }
 
     private final Map<Long, Map<String, Set<WireNetworkSink>>> sinks = new HashMap<>();
 
@@ -175,6 +191,8 @@ public final class ShipWireNetworkManager {
                 m.sinks.getOrDefault(in.asLong(), new HashMap<>())
                         .forEach((channel, subnet) -> subnet.forEach(node -> node.setInput(level, channel, 0)));
                 m.sinks.remove(in.asLong());
+
+                m.staticSinks.remove(in.asLong());
             });
         }
     }
@@ -184,12 +202,21 @@ public final class ShipWireNetworkManager {
     }
 
     public void setSource(Level level, BlockPos src, String channel, int signal) {
-        if (sinks.containsKey(src.asLong()) && sinks.get(src.asLong()).containsKey(channel))
+        if (sinks.containsKey(src.asLong()) && sinks.get(src.asLong()).containsKey(channel)) {
             sinks.get(src.asLong()).get(channel).forEach(n -> n.setInput(level, channel, signal));
+        }
+
+        for (Consumer<Pair<String, Integer>> listener : changeListeners) {
+            listener.accept(new Pair<>(channel, signal));
+        }
+
+        Map<String, Integer> s = staticSinks.getOrDefault(src.asLong(), new HashMap<>());
+        s.put(channel, signal);
+        staticSinks.put(src.asLong(), s);
     }
 
     @Nonnull
-    private Set<WireNetworkSink> getOrCreateSinksOnChannel(BlockPos source, String channel) {
+    public Set<WireNetworkSink> getOrCreateSinksOnChannel(BlockPos source, String channel) {
         return sinks.computeIfAbsent(source.asLong(), k -> new HashMap<>()).computeIfAbsent(channel, k -> new HashSet<>());
     }
 
@@ -327,6 +354,7 @@ public final class ShipWireNetworkManager {
 
     public void clear() {
         sinks.clear();
+        staticSinks.clear();
         nodes.clear();
     }
 
